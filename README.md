@@ -19,7 +19,7 @@ Before installing this gem, please make sure that the following systems are up a
 Add this line to your Mastodon application's Gemfile:
 
 ```ruby
-gem "long_post", git: "https://github.com/patchwork-hub/long_post"
+gem "posts", git: "https://github.com/patchwork-hub/posts"
 ```
 
 ### Step 2: Install The gem
