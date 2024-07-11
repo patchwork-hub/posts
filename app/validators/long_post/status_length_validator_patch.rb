@@ -4,8 +4,8 @@ module LongPost
       base.class_eval do
         def validate(status)
           return unless status.local? && !status.reblog?
-
           max_chars = get_max_chars
+          Rails.logger.info("MAX_CHARACTER: #{max_chars}")
           status.errors.add(:text, I18n.t('statuses.over_character_limit', max: max_chars)) if too_long?(status)
         end
 
