@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LongPost
   module StatusLengthValidatorPatch
     def self.prepended(base)

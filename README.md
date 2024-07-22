@@ -6,6 +6,7 @@ A Ruby on Rails plugin for extending the character limit on Mastodon posts.
 
 - **Extended Character Limit**: Increase the character limit for posts beyond the default limit.
 - **Dynamic Configuration**: Set and modify the maximum character limit through server settings.
+- **Posting drafts**: Enable or disable the creation of drafted posts through server settings.
 
 ## Installation
 

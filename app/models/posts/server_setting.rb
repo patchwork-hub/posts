@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'posts/application_record'
 
 module Posts
