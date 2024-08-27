@@ -3,7 +3,7 @@
 module Posts
   class Engine < ::Rails::Engine
     isolate_namespace Posts
-
+    
     initializer :append_migrations do |app|
       unless app.root.to_s.match root.to_s
         config.paths["db/migrate"].expanded.each do |expanded_path|
@@ -16,6 +16,23 @@ module Posts
       app.routes.prepend do
         mount Posts::Engine => "/", :as => :posts
       end
+    end
+
+    initializer 'posts.append_fabricators' do |app|
+      if Rails.env.test?
+        fabricator_paths = Dir[Rails.root.join('spec/fabricators/**/*.rb')] +
+                           Dir[File.expand_path('../../../posts/spec/fabricators/**/*.rb', __dir__)]
+        
+        fabricator_paths.each do |f|
+          require f
+        end
+      end
+    end
+
+    config.generators do |g|
+      g.test_framework :rspec
+      g.assets false
+      g.helper false
     end
 
     config.autoload_paths << File.expand_path("../app/services", __FILE__)

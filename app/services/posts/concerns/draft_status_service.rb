@@ -65,7 +65,7 @@ module Posts::Concerns::DraftStatusService
         # the media attachments when the drafted status is created
   
         ApplicationRecord.transaction do
-          @status = @account.drafted_statuses.create!(drafted_status_attributes)
+          @status = @account.patchwork_drafted_statuses.create!(drafted_status_attributes)
         end
       else
         raise ActiveRecord::RecordInvalid
