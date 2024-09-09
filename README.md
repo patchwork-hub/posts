@@ -15,8 +15,8 @@ Set a custom character limit for posts on the server.
 
 Before installing this gem, please make sure that the following systems are up and running:
 
-- Set up a Mastodon server
-- Patchwork Dashboard
+- [Set up a Mastodon server](https://docs.joinmastodon.org/admin/install/)
+- [Patchwork Dashboard](https://github.com/patchwork-hub/patchwork_dashboard/blob/main/README.md)
 
 1. Add this line to your Mastodon application's Gemfile:
 
