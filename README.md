@@ -1,36 +1,36 @@
-# Posts
+## Overview
 
-A Ruby on Rails plugin for extending the character limit on Mastodon posts.
+New post features for your Patchwork enhanced Mastodon server.
 
-## Features
+To enable this plugin please make sure you have set up a Mastodon server and installed the Patchwork Dashboard, with both running correctly.
 
-- **Extended Character Limit**: Increase the character limit for posts beyond the default limit.
-- **Dynamic Configuration**: Set and modify the maximum character limit through server settings.
+[See the full Patchwork ReadMe here.](https://github.com/patchwork-hub/patchwork_dashboard/blob/main/README.md)
 
-## Installation
+### Features
+
+#### Custom Character Limit:
+Set a custom character limit for posts on the server.
+  
+### Installation
 
 Before installing this gem, please make sure that the following systems are up and running:
 
-- A Mastodon server set up from source
-- Patchwork dashboard system
+- Set up a Mastodon server
+- Patchwork Dashboard
 
-### Step 1: Add the Gem
-
-Add this line to your Mastodon application's Gemfile:
+1. Add this line to your Mastodon application's Gemfile:
 
 ```ruby
 gem "posts", git: "https://github.com/patchwork-hub/posts"
 ```
 
-### Step 2: Install The gem
+2. Install The gem
 
 ```ruby
 bundle install
 ```
 
-### Step 3: Restart Your Application
-
-After installing the gem, restart your application to load it in your application.
+3. After installing the gem, restart your application to load it in your application.
 
 ## License
 
