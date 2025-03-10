@@ -20,11 +20,11 @@ module Posts
     private
 
     def validate_total_limit
-      errors.add(:base, I18n.t('scheduled_statuses.over_total_limit', limit: TOTAL_LIMIT)) if account.drafted_statuses.count >= TOTAL_LIMIT
+      errors.add(:base, I18n.t('scheduled_statuses.over_total_limit', limit: TOTAL_LIMIT)) if account.patchwork_drafted_statuses.count >= TOTAL_LIMIT
     end
 
     def validate_daily_limit
-      errors.add(:base, I18n.t('scheduled_statuses.over_daily_limit', limit: DAILY_LIMIT)) if account.drafted_statuses.where('created_at::date = ?::date', created_at).count >= DAILY_LIMIT
+      errors.add(:base, I18n.t('scheduled_statuses.over_daily_limit', limit: DAILY_LIMIT)) if account.patchwork_drafted_statuses.where('created_at::date = ?::date', created_at).count >= DAILY_LIMIT
     end
   end
 end
