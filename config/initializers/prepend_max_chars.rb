@@ -7,4 +7,6 @@ Rails.application.config.to_prepare do
   MediaAttachment.include(Posts::Concerns::MediaAttachmentConcern)
   Account.include(Posts::Concerns::AccountConcern)
   PostStatusService.prepend(Posts::Concerns::DraftStatusService)
+  Status.include(Posts::Concerns::StatusConcern)
+  AccountStatusesFilter.prepend(Overrides::ExtendedAccountStatusesFilter)
 end
