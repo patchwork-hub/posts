@@ -7,6 +7,7 @@ module Overrides::ExtendedAccountStatusesFilter
     exclude_replies
     exclude_reblogs
     only_reblogs
+    exclude_original_statuses
   ).freeze
 
   def results
@@ -29,7 +30,15 @@ module Overrides::ExtendedAccountStatusesFilter
     Status.fetch_reblogs
   end
 
+  def no_original_statuses_scope
+    Status.without_original_statuses
+  end
+
   def only_reblogs?
     truthy_param?(:only_reblogs)
+  end
+
+  def exclude_original_statuses?
+    truthy_param?(:exclude_original_statuses)
   end
 end

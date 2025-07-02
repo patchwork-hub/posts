@@ -5,5 +5,6 @@ module Posts::Concerns::StatusConcern
   
   included do
     scope :fetch_reblogs, -> { where.not(statuses: { reblog_of_id: nil }) }
+    scope :without_original_statuses, -> { where.not(reply: false) }
   end
 end
