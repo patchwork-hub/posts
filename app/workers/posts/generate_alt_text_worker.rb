@@ -1,7 +1,7 @@
 module Posts
   class GenerateAltTextWorker
     include Sidekiq::Worker
-    sidekiq_options queue: 'generate_alt_text', retry: false, dead: true
+    sidekiq_options queue: 'default', retry: false, dead: true
 
       def perform(media_attachment_id)
           @media_attachment = MediaAttachment.find(media_attachment_id)
