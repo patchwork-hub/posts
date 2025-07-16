@@ -24,7 +24,7 @@ module Posts::Concerns::MediaAttachmentConcern
     
     def check_user_desc?
       flag = !self.description.present?
-      puts "description is already exists" if !flag
+      Rails.logger.info "description is already exists" if !flag
       return flag
     end
 
@@ -34,7 +34,7 @@ module Posts::Concerns::MediaAttachmentConcern
 
     def is_valid_content_type?
       flag = IMAGE_ALLOW_TYPES.include?(self.file_content_type)
-      puts "invalid content_type is : #{self.file_content_type}" if !flag
+      Rails.logger.info "invalid content_type is : #{self.file_content_type}" if !flag
       return flag
     end
 
@@ -56,7 +56,7 @@ module Posts::Concerns::MediaAttachmentConcern
     @media_attachment = MediaAttachment.find(id)
     return unless @media_attachment.can_generate_alt?
     
-    puts "starting GenerateAltTextWorker"
-    Posts::GenerateAltTextWorker.perform_async(id)
+    Rails.logger.info "starting GenerateAltTextWorker"
+    GenerateAltTextWorker.perform_async(id)
   end
 end

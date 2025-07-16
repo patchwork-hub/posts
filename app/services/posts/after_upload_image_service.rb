@@ -15,7 +15,7 @@ module Posts
       return unless create_image_at_alttext_ai
       update_image_alt
     rescue StandardError => e
-      puts "Error: #{e.message}"
+      Rails.logger.info "Error: #{e.message}"
     end
 
     private
