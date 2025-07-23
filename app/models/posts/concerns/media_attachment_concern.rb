@@ -10,7 +10,8 @@ module Posts::Concerns::MediaAttachmentConcern
     scope :attached,   -> { where.not(status_id: nil).or(where.not(scheduled_status_id: nil)).or(where.not(patchwork_drafted_status_id: nil)) }
     scope :unattached, -> { where(status_id: nil, scheduled_status_id: nil, patchwork_drafted_status_id: nil) }
     
-    after_save :call_generate_alt_text_worker
+    # Commented out to avoid mo-me server
+    # after_save :call_generate_alt_text_worker
 
     IMAGE_ALLOW_TYPES = %w(image/jpeg image/png image/gif image/webp image/bmp).freeze
 
