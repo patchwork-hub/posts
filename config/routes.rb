@@ -10,7 +10,12 @@ Posts::Engine.routes.draw do
         end
       end
 
+      resources :utilities, only: [] do
+        collection do
+          get :link_preview
+        end
+      end
+
     end
   end
 end
-
