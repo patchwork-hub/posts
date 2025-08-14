@@ -29,4 +29,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rails", "~> 8.0"
   spec.add_dependency "byebug"
   spec.add_dependency "annotaterb"
+  spec.add_dependency 'link_thumbnailer'
 end
