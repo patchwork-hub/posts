@@ -9,4 +9,5 @@ Rails.application.config.to_prepare do
   PostStatusService.prepend(Posts::Concerns::DraftStatusService)
   Status.include(Posts::Concerns::StatusConcern)
   AccountStatusesFilter.prepend(Overrides::ExtendedAccountStatusesFilter)
+  Api::V1::ScheduledStatusesController.prepend(Overrides::ScheduledStatusesController)
 end
