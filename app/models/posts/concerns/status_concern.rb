@@ -13,7 +13,7 @@ module Posts::Concerns::StatusConcern
   private
 
   def boost_posts
-    if self.local? && !self.reblog?
+    if self.local? && !self.reblog? && !self.reply?
       return unless ENV.values_at('BOOST_POST_INSTANCE_URL', 'BOOST_POST_USERNAME', 'BOOST_POST_USER_DOMAIN').all?(&:present?)
       post_url = ActivityPub::TagManager.instance.url_for(self)
       return unless post_url
