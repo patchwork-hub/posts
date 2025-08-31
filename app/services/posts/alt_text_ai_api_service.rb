@@ -5,8 +5,8 @@ module Posts
 
     def initialize(options = {})
       @options = options
-      @base_url = ENV['ALTTEXT_URL']
-      @api_key =  ENV['ALTTEXT_SECRET']
+      @base_url = ENV['ALT_TEXT_URL']
+      @api_key =  ENV['ALT_TEXT_SECRET']
       @payload = @options[:payload] if @options.key?(:payload)
     end
 

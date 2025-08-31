@@ -15,7 +15,7 @@ module Posts
       return unless create_image_at_alttext_ai
       update_image_alt
     rescue StandardError => e
-      Rails.logger.info "Error: #{e.message}"
+      Rails.logger.error "Error: #{e.message}"
     end
 
     private
@@ -31,7 +31,11 @@ module Posts
       return false unless response_body && !response_body.has_errors?
       usage_limit = response_body.usage_limit
       usage = response_body.usage
-      usage < usage_limit
+      if usage < usage_limit
+        return true
+      else
+        raise "API usage limit exceeded: #{usage}/#{usage_limit}"
+      end
     end
 
     def update_image_alt

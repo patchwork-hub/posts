@@ -3,7 +3,6 @@
 module Posts::Concerns::MediaAttachmentConcern
   extend ActiveSupport::Concern  
 
-
   included do
     belongs_to :patchwork_drafted_status, inverse_of: :media_attachments, optional: true , class_name: "Posts::DraftedStatus"
 
@@ -12,10 +11,8 @@ module Posts::Concerns::MediaAttachmentConcern
     
     after_save :call_generate_alt_text_worker if ENV['ALT_TEXT_ENABLED'].present? && ENV['ALT_TEXT_ENABLED'].to_s.downcase == 'true'
 
-    IMAGE_ALLOW_TYPES = %w(image/jpeg image/png image/gif image/webp image/bmp).freeze
-
     def can_generate_alt?
-      if is_valid_content_type? && check_file_size? && generate_alt_text? && check_user_desc? && is_end_user_upload?
+      if image_file? && check_user_desc? && local_or_reblogged_status?
         return true
       else
         return false
@@ -23,40 +20,30 @@ module Posts::Concerns::MediaAttachmentConcern
     end
     
     def check_user_desc?
-      flag = !self.description.present?
-      Rails.logger.info "description is already exists" if !flag
-      return flag
+      !self.description.present?
     end
 
-    def generate_alt_text?
-      ActiveModel::Type::Boolean.new.cast(ENV['ALT_TEXT_ENABLED'])
+    def image_file?
+      self.file_content_type.start_with?("image/")
     end
 
-    def is_valid_content_type?
-      flag = IMAGE_ALLOW_TYPES.include?(self.file_content_type)
-      Rails.logger.info "invalid content_type is : #{self.file_content_type}" if !flag
-      return flag
-    end
+    def local_or_reblogged_status?
+      if self.status_id.present?
+        status = self.status
+        return true if status.local? || status.reply?
 
-    def check_file_size?
-      self.file_file_size <= 10.megabytes
-    end
-
-    def is_end_user_upload?
-      if self.account.domain.nil?
-        return self.account.user.role.name === "" || self.account.user.role.name.empty? 
+        status.reblog? && status.account.domain.nil?
+      else
+        return false
       end
-      return false
     end
   end
 
   private
 
   def call_generate_alt_text_worker
-    @media_attachment = MediaAttachment.find(id)
-    return unless @media_attachment.can_generate_alt?
-    
-    Rails.logger.info "starting GenerateAltTextWorker"
-    GenerateAltTextWorker.perform_async(id)
+    return unless self.can_generate_alt?
+
+    GenerateAltTextWorker.perform_async(self.id)
   end
 end
