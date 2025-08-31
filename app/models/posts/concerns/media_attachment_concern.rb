@@ -10,8 +10,7 @@ module Posts::Concerns::MediaAttachmentConcern
     scope :attached,   -> { where.not(status_id: nil).or(where.not(scheduled_status_id: nil)).or(where.not(patchwork_drafted_status_id: nil)) }
     scope :unattached, -> { where(status_id: nil, scheduled_status_id: nil, patchwork_drafted_status_id: nil) }
     
-    # Commented out to avoid mo-me server
-    # after_save :call_generate_alt_text_worker
+    after_save :call_generate_alt_text_worker if ENV['ALT_TEXT_ENABLED'].present? && ENV['ALT_TEXT_ENABLED'].to_s.downcase == 'true'
 
     IMAGE_ALLOW_TYPES = %w(image/jpeg image/png image/gif image/webp image/bmp).freeze
 
@@ -30,7 +29,7 @@ module Posts::Concerns::MediaAttachmentConcern
     end
 
     def generate_alt_text?
-      ActiveModel::Type::Boolean.new.cast(ENV['GENERATE_ALT_TEXT'])
+      ActiveModel::Type::Boolean.new.cast(ENV['ALT_TEXT_ENABLED'])
     end
 
     def is_valid_content_type?
