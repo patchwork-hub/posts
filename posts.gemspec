@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "rails", "~> 8.0"
-  spec.add_dependency "byebug"
-  spec.add_dependency "annotaterb"
-  spec.add_dependency 'link_thumbnailer'
+  spec.add_dependency "byebug", '~> 11.1'
+  spec.add_dependency "annotaterb", '~> 4.13'
+  spec.add_dependency 'link_thumbnailer', '~> 3.4'
 end
