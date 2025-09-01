@@ -25,10 +25,6 @@ module Posts::Concerns::MediaAttachmentConcern
       !self.description.present?
     end
 
-    # def image_file?
-    #   self.file_content_type.start_with?("image/")
-    # end
-
     def is_valid_content_type?
       flag = IMAGE_ALLOW_TYPES.include?(self.file_content_type)
       Rails.logger.info "invalid content_type is : #{self.file_content_type}" if !flag
