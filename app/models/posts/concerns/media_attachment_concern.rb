@@ -8,11 +8,13 @@ module Posts::Concerns::MediaAttachmentConcern
 
     scope :attached,   -> { where.not(status_id: nil).or(where.not(scheduled_status_id: nil)).or(where.not(patchwork_drafted_status_id: nil)) }
     scope :unattached, -> { where(status_id: nil, scheduled_status_id: nil, patchwork_drafted_status_id: nil) }
-    
+
+    IMAGE_ALLOW_TYPES = %w(image/jpg image/png image/gif image/webp image/bmp).freeze
+
     after_save :call_generate_alt_text_worker if ENV['ALT_TEXT_ENABLED'].present? && ENV['ALT_TEXT_ENABLED'].to_s.downcase == 'true'
 
     def can_generate_alt?
-      if image_file? && check_user_desc? && local_or_reblogged_status?
+      if is_valid_content_type? && check_user_desc? && local_or_reblogged_status?
         return true
       else
         return false
@@ -23,8 +25,14 @@ module Posts::Concerns::MediaAttachmentConcern
       !self.description.present?
     end
 
-    def image_file?
-      self.file_content_type.start_with?("image/")
+    # def image_file?
+    #   self.file_content_type.start_with?("image/")
+    # end
+
+    def is_valid_content_type?
+      flag = IMAGE_ALLOW_TYPES.include?(self.file_content_type)
+      Rails.logger.info "invalid content_type is : #{self.file_content_type}" if !flag
+      return flag
     end
 
     def local_or_reblogged_status?
