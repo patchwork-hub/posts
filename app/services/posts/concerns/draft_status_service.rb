@@ -27,7 +27,7 @@ module Posts::Concerns::DraftStatusService
     @text        = @options[:text] || ''
     @in_reply_to = @options[:thread]
 
-    @antispam = Antispam.new
+    # @antispam = Antispam.new // Disabled for drafted statuses to meet with Qlub version
 
     return idempotency_duplicate if idempotency_given? && idempotency_duplicate?
 
@@ -50,8 +50,9 @@ module Posts::Concerns::DraftStatusService
     end
 
     @status
-  rescue Antispam::SilentlyDrop => e
-    e.status
+  # / Disabled for drafted statuses to meet with Qlub version 
+  # rescue Antispam::SilentlyDrop => e
+  #   e.status
   end
 
   private
