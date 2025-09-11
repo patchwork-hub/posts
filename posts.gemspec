@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "rails", "~> 8.0"
+  spec.add_dependency "rails", "~> 7.1.1"
   spec.add_dependency "byebug", '~> 11.1'
   spec.add_dependency "annotaterb", '~> 4.13'
   spec.add_dependency 'link_thumbnailer', '~> 3.4'
