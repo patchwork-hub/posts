@@ -75,7 +75,7 @@ module Posts::Concerns::DraftStatusService
 
   def draft_status!
     status_for_validation = @account.statuses.build(status_attributes)
-    @antispam.local_preflight_check!(status_for_validation)
+    # @antispam.local_preflight_check!(status_for_validation)
 
     if status_for_validation.valid?
       # Marking the status as destroyed is necessary to prevent the status from being
@@ -92,8 +92,8 @@ module Posts::Concerns::DraftStatusService
     else
       raise ActiveRecord::RecordInvalid
     end
-  rescue Antispam::SilentlyDrop
-    @status = @account.patchwork_drafted_status.new(drafted_status_attributes).tap(&:delete)
+  # rescue Antispam::SilentlyDrop
+  #   @status = @account.patchwork_drafted_status.new(drafted_status_attributes).tap(&:delete)
   end
 
   def drafted_status_attributes
