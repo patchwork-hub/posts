@@ -15,7 +15,7 @@ module LongPost
     private
 
     def get_max_chars
-      setting = Posts::ServerSetting.get_long_post('Long posts and markdown')
+      setting = Posts::ServerSetting.get_long_post('Long posts')
       setting&.value ? setting.optional_value.to_i : 500
     end
   end
