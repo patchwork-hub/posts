@@ -11,7 +11,7 @@ module Posts::Concerns::MediaAttachmentConcern
 
     IMAGE_ALLOW_TYPES = %w(image/jpg image/png image/gif image/webp image/bmp).freeze
 
-    after_save :call_generate_alt_text_worker if ENV['ALT_TEXT_ENABLED'].present? && ENV['ALT_TEXT_ENABLED'].to_s.downcase == 'true'
+    after_update_commit :call_generate_alt_text_worker if ENV['ALT_TEXT_ENABLED'].present? && ENV['ALT_TEXT_ENABLED'].to_s.downcase == 'true'
 
     def can_generate_alt?
       if is_valid_content_type? && check_user_desc? && local_or_reblogged_status?

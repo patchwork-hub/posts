@@ -1,6 +1,6 @@
 module Posts
   class AltTextAiApiService
-    require 'net/http'
+    require 'httparty'
     require 'json'
 
     def initialize(options = {})
@@ -21,14 +21,13 @@ module Posts
     end
 
     def make_get_request(endpoint)
-      uri = URI.join(@base_url, endpoint)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      request = Net::HTTP::Get.new(uri, 'Content-Type' => 'application/json')
-      request['X-API-Key'] = @api_key
-
+      base_url = @base_url + endpoint
+      headers = {
+      'X-API-Key' => @api_key,
+      'Content-Type' => 'application/json',
+      }
       begin
-        response = http.request(request)
+        response = HTTParty.get(base_url, headers: headers)
         resp_body_obj = Posts::AlttextGetAccount.new(JSON.parse(response.body))
         Rails.logger.info "alttest.ai get account info resp body >> #{resp_body_obj.to_json}"
         return resp_body_obj
@@ -38,14 +37,14 @@ module Posts
     end
 
     def make_post_request(endpoint)
-      uri = URI.join(@base_url, endpoint)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true
-      request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
-      request['X-API-Key'] = @api_key
-      request.body = @payload.to_json
+      base_url = @base_url + endpoint
+      headers = {
+      'X-API-Key' => @api_key,
+      'Content-Type' => 'application/json',
+      }
       begin
-        response = http.request(request)
+        response = HTTParty.post(base_url,
+                  body: @payload.to_json, headers: headers)
         resp_body_obj = Posts::AlttextCreateImage.new(JSON.parse(response.body))
         Rails.logger.info "alttest.ai create image resp body >> #{resp_body_obj.to_json}"
         return resp_body_obj
