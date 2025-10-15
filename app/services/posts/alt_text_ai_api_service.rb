@@ -11,13 +11,13 @@ module Posts
     end
 
     def get_account
-      respon = make_get_request('account')
-      return respon
+      response = make_get_request('account')
+      return response
     end
 
     def create_image
-      respon = make_post_request('images')
-      return respon
+      response = make_post_request('images')
+      return response
     end
 
     def make_get_request(endpoint)
