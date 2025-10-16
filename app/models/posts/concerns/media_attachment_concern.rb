@@ -9,7 +9,7 @@ module Posts::Concerns::MediaAttachmentConcern
     scope :attached,   -> { where.not(status_id: nil).or(where.not(scheduled_status_id: nil)).or(where.not(patchwork_drafted_status_id: nil)) }
     scope :unattached, -> { where(status_id: nil, scheduled_status_id: nil, patchwork_drafted_status_id: nil) }
 
-    IMAGE_ALLOW_TYPES = %w(image/jpg image/png image/gif image/webp image/bmp).freeze
+    IMAGE_ALLOW_TYPES = %w(image/jpeg image/jpg image/png image/gif image/webp image/bmp).freeze
 
     after_save :call_generate_alt_text_worker if ENV['ALT_TEXT_ENABLED'].present? && ENV['ALT_TEXT_ENABLED'].to_s.downcase == 'true'
 
