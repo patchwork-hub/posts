@@ -6,6 +6,7 @@ module Posts::Concerns::StatusConcern
   included do
     scope :fetch_reblogs, -> { where.not(statuses: { reblog_of_id: nil }) }
     scope :without_original_statuses, -> { where.not(reply: false) }
+    scope :without_direct_statuses, -> { where.not(visibility: Status.visibilities[:direct]) }
 
     after_create :boost_posts if ENV['BOOST_POST_ENABLED'].present? && ENV['BOOST_POST_ENABLED'].to_s.downcase == 'true'
   end
