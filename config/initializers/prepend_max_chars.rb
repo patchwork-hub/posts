@@ -10,4 +10,6 @@ Rails.application.config.to_prepare do
   Status.include(Posts::Concerns::StatusConcern)
   AccountStatusesFilter.prepend(Overrides::ExtendedAccountStatusesFilter)
   Api::V1::ScheduledStatusesController.prepend(Overrides::ScheduledStatusesController)
+  Api::V2::NotificationsController.prepend(Overrides::NotificationExtendedController)
+  Notification.prepend(Posts::Concerns::NotificationConcern)
 end
