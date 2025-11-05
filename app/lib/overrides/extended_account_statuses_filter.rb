@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 module Overrides::ExtendedAccountStatusesFilter
+  include Redisable
+
   KEYS = %i(
     pinned
     tagged
@@ -9,6 +11,7 @@ module Overrides::ExtendedAccountStatusesFilter
     only_reblogs
     exclude_original_statuses
     exclude_direct_statuses
+    include_custom_timelines
   ).freeze
 
   def results
@@ -22,6 +25,7 @@ module Overrides::ExtendedAccountStatusesFilter
     scope.merge!(hashtag_scope) if tagged?
     scope.merge!(only_rebogs_scope) if only_reblogs?
     scope.merge!(no_direct_statuses_scope) if exclude_direct_statuses?
+    scope.merge!(custom_scope) if include_custom_timelines?
 
     scope
   end
@@ -50,5 +54,15 @@ module Overrides::ExtendedAccountStatusesFilter
 
   def exclude_direct_statuses?
     truthy_param?(:exclude_direct_statuses)
+  end
+
+  def include_custom_timelines?
+    truthy_param?(:include_custom_timelines)
+  end
+
+  # for custom timelines
+  def custom_scope
+    status_ids = redis.zrange(FeedManager.instance.key(:custom, @account.id), 0, -1)
+    Status.where(id: status_ids).joins(:account).merge(Account.without_suspended.without_silenced)
   end
 end
