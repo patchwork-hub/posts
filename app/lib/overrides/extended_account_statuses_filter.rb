@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 module Overrides::ExtendedAccountStatusesFilter
+  include Redisable
+
   KEYS = %i(
     pinned
     tagged
@@ -22,6 +24,7 @@ module Overrides::ExtendedAccountStatusesFilter
     scope.merge!(hashtag_scope) if tagged?
     scope.merge!(only_rebogs_scope) if only_reblogs?
     scope.merge!(no_direct_statuses_scope) if exclude_direct_statuses?
+    scope.merge!(custom_scope) if no_boost_channel?
 
     scope
   end
@@ -50,5 +53,15 @@ module Overrides::ExtendedAccountStatusesFilter
 
   def exclude_direct_statuses?
     truthy_param?(:exclude_direct_statuses)
+  end
+
+  def no_boost_channel?
+    ServerSetting.find_by(name: "No-Boost")&.value == true
+  end
+
+  # for custom timelines
+  def custom_scope
+    status_ids = redis.zrange(FeedManager.instance.key(:custom, @account.id), 0, -1)
+    Status.where(id: status_ids).joins(:account).merge(Account.without_suspended.without_silenced)
   end
 end
