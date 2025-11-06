@@ -11,7 +11,6 @@ module Overrides::ExtendedAccountStatusesFilter
     only_reblogs
     exclude_original_statuses
     exclude_direct_statuses
-    include_custom_timelines
   ).freeze
 
   def results
@@ -25,7 +24,7 @@ module Overrides::ExtendedAccountStatusesFilter
     scope.merge!(hashtag_scope) if tagged?
     scope.merge!(only_rebogs_scope) if only_reblogs?
     scope.merge!(no_direct_statuses_scope) if exclude_direct_statuses?
-    scope.merge!(custom_scope) if include_custom_timelines?
+    scope.merge!(custom_scope) if no_boost_channel?
 
     scope
   end
@@ -56,8 +55,8 @@ module Overrides::ExtendedAccountStatusesFilter
     truthy_param?(:exclude_direct_statuses)
   end
 
-  def include_custom_timelines?
-    truthy_param?(:include_custom_timelines)
+  def no_boost_channel?
+    ServerSetting.find_by(name: "No-Boost")&.value == true
   end
 
   # for custom timelines
