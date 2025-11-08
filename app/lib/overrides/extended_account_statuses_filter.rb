@@ -14,7 +14,7 @@ module Overrides::ExtendedAccountStatusesFilter
   ).freeze
 
   def results
-    scope = initial_scope
+    scope = no_boost_channel? ? custom_scope : initial_scope
 
     scope.merge!(pinned_scope)     if pinned?
     scope.merge!(only_media_scope) if only_media?
@@ -24,7 +24,6 @@ module Overrides::ExtendedAccountStatusesFilter
     scope.merge!(hashtag_scope) if tagged?
     scope.merge!(only_rebogs_scope) if only_reblogs?
     scope.merge!(no_direct_statuses_scope) if exclude_direct_statuses?
-    scope.merge!(custom_scope) if no_boost_channel?
 
     scope
   end
@@ -56,7 +55,15 @@ module Overrides::ExtendedAccountStatusesFilter
   end
 
   def no_boost_channel?
-    ServerSetting.find_by(name: "No-Boost")&.value == true
+    setting = ServerSetting.find_by(name: "No-Boost")
+    return false unless setting&.value == true
+
+    community_admin = Posts::CommunityAdmin
+                        .includes(:community)
+                        .find_by(account_id: @account.id, is_boost_bot: true)
+    return false unless community_admin&.community&.channel_type == "channel_feed"
+
+    true
   end
 
   # for custom timelines
