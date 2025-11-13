@@ -56,6 +56,8 @@ module Overrides::ExtendedAccountStatusesFilter
 
   def no_boost_channel?
     begin
+      return false unless Object.const_defined?('Posts::ServerSetting')
+  
       community_admin = Posts::CommunityAdmin
                           .includes(:community)
                           .find_by(account_id: @account.id, is_boost_bot: true)
