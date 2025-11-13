@@ -55,13 +55,16 @@ module Overrides::ExtendedAccountStatusesFilter
   end
 
   def no_boost_channel?
-    setting = ServerSetting.find_by(name: "No-Boost")
-    return false unless setting&.value == true
+    begin
+      community_admin = Posts::CommunityAdmin
+                          .includes(:community)
+                          .find_by(account_id: @account.id, is_boost_bot: true)
+    rescue StandardError => e
+      Rails.logger.warn("Skipping CommunityAdmin check: #{e.message}")
+      return false
+    end
 
-    community_admin = Posts::CommunityAdmin
-                        .includes(:community)
-                        .find_by(account_id: @account.id, is_boost_bot: true)
-    return false unless community_admin&.community&.channel_type == "channel_feed"
+    return false unless community_admin&.community&.no_boost_channel == true
 
     true
   end
