@@ -8,6 +8,8 @@ module Posts::Concerns::DraftStatusService
   # @param [Hash] options
   # @option [String] :text Message
   # @option [Status] :thread Optional status to reply to
+  # @option [Status] :quoted_status Optional status to quote
+  # @option [String] :quote_approval_policy Approval policy for quotes, one of `public`, `followers` or `nobody`
   # @option [Boolean] :sensitive
   # @option [String] :visibility
   # @option [String] :spoiler_text
@@ -26,8 +28,7 @@ module Posts::Concerns::DraftStatusService
     @options     = options
     @text        = @options[:text] || ''
     @in_reply_to = @options[:thread]
-
-    @antispam = Antispam.new
+    @quoted_status = @options[:quoted_status]
 
     return idempotency_duplicate if idempotency_given? && idempotency_duplicate?
 
@@ -61,6 +62,7 @@ module Posts::Concerns::DraftStatusService
     @text         = @options.delete(:spoiler_text) if @text.blank? && @options[:spoiler_text].present?
     @visibility   = @options[:visibility] || @account.user&.setting_default_privacy
     @visibility   = :unlisted if @visibility&.to_sym == :public && @account.silenced?
+    @visibility   = :private if @quoted_status&.private_visibility? && %i(public unlisted).include?(@visibility&.to_sym)
     @scheduled_at = @options[:scheduled_at]&.to_datetime
     @scheduled_at = nil if scheduled_in_the_past?
     @drafted      = @options[:drafted]
@@ -74,8 +76,11 @@ module Posts::Concerns::DraftStatusService
 
   def draft_status!
     status_for_validation = @account.statuses.build(status_attributes)
-    @antispam.local_preflight_check!(status_for_validation)
+    safeguard_private_mention_quote!(status_for_validation)
 
+    antispam = Antispam.new(status_for_validation)
+    antispam.local_preflight_check!
+    
     if status_for_validation.valid?
       # Marking the status as destroyed is necessary to prevent the status from being
       # persisted when the associated media attachments get updated when creating the
