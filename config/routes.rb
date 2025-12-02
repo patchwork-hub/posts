@@ -16,6 +16,9 @@ Posts::Engine.routes.draw do
         end
       end
 
+      post 'patchwork/relays', to: 'relays#create'
+      delete 'patchwork/relays/:id', to: 'relays#destroy'
+
     end
   end
 end
