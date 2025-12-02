@@ -22,7 +22,8 @@ module Posts::Concerns::MediaAttachmentConcern
     end
 
     def check_alt_text_enabled?
-      current_user.alttext_enabled
+      user = User.find_by_account_id(self.account_id)
+      user&.alttext_enabled
     end
     
     def check_user_desc?
