@@ -14,16 +14,17 @@ module Posts::Concerns::MediaAttachmentConcern
     after_save :call_generate_alt_text_worker if ENV['ALT_TEXT_ENABLED'].present? && ENV['ALT_TEXT_ENABLED'].to_s.downcase == 'true'
 
     def can_generate_alt?
-      if is_valid_content_type? && check_user_desc? && local_or_reblogged_status?
+      if is_valid_content_type? && check_user_desc? && local_or_reblogged_status? && check_alt_text_enabled?
         return true
       else
         return false
       end
     end
 
-    # def check_alt_text_enabled?
-    #   current_user&.alttext_enabled
-    # end
+    def check_alt_text_enabled?
+      user = User.find_by_account_id(self.account_id)
+      user&.alttext_enabled
+    end
     
     def check_user_desc?
       !self.description.present?
