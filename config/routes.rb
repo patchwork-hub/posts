@@ -13,6 +13,7 @@ Posts::Engine.routes.draw do
       resources :utilities, only: [] do
         collection do
           get :link_preview
+          get :getLocalOnlySetting
         end
       end
 
