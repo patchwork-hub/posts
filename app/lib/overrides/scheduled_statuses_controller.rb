@@ -21,6 +21,7 @@ module Overrides::ScheduledStatusesController
       :spoiler_text,
       :visibility,
       :language,
+      :local_only,
       :scheduled_at,
       allowed_mentions: [],
       media_ids: [],
@@ -56,6 +57,7 @@ module Overrides::ScheduledStatusesController
       allowed_mentions: scheduled_status_params[:allowed_mentions],
       idempotency: request.headers['Idempotency-Key'],
       with_rate_limit: true,
+      local_only: scheduled_status_params[:local_only]
     )
   end
 end

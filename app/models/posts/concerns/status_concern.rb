@@ -7,11 +7,22 @@ module Posts::Concerns::StatusConcern
     scope :fetch_reblogs, -> { where.not(statuses: { reblog_of_id: nil }) }
     scope :without_original_statuses, -> { where.not(reply: false) }
     scope :without_direct_statuses, -> { where.not(visibility: Status.visibilities[:direct]) }
+    scope :without_local_only, -> { where(local_only: [false, nil]) }
+
+    before_create :set_locality
 
     after_create :boost_posts if ENV['BOOST_POST_ENABLED'].present? && ENV['BOOST_POST_ENABLED'].to_s.downcase == 'true'
   end
 
+  def local_only?
+    local_only
+  end
+
   private
+
+  def set_locality
+    self.local_only = reblog.local_only if reblog?
+  end
 
   def boost_posts
     if self.local? && !self.reblog? && !self.reply?

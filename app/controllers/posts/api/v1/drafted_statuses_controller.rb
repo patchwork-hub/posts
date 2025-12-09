@@ -13,9 +13,9 @@ module Posts::Api::V1
 
     after_action :insert_pagination_headers, only: :index
 
-    def create 
+    def create
       @status = post_status_service
-  
+
       render json: @status, serializer: LongPost::DraftedStatusSerializer
     rescue PostStatusService::UnexpectedMentionsError => e
       unexpected_accounts = ActiveModel::Serializer::CollectionSerializer.new(
@@ -33,10 +33,10 @@ module Posts::Api::V1
       render json: @status, serializer: LongPost::DraftedStatusSerializer
     end
 
-    def update 
+    def update
       @status.destroy!
       @status = post_status_service
-  
+
       render json: @status, serializer: LongPost::DraftedStatusSerializer
     rescue PostStatusService::UnexpectedMentionsError => e
       unexpected_accounts = ActiveModel::Serializer::CollectionSerializer.new(
@@ -55,7 +55,7 @@ module Posts::Api::V1
       @status.destroy!
 
       @status = post_status_service(is_draft: false)
-      
+
       render json: @status, serializer: @status.is_a?(ScheduledStatus) ? REST::ScheduledStatusSerializer : REST::StatusSerializer
     rescue PostStatusService::UnexpectedMentionsError => e
     unexpected_accounts = ActiveModel::Serializer::CollectionSerializer.new(
@@ -100,6 +100,7 @@ module Posts::Api::V1
         :spoiler_text,
         :visibility,
         :language,
+        :local_only,
         :scheduled_at,
         :is_only_for_followers,
         :is_meta_preview,
@@ -180,6 +181,7 @@ module Posts::Api::V1
         allowed_mentions: drafted_status_params[:allowed_mentions],
         idempotency: request.headers['Idempotency-Key'],
         with_rate_limit: true,
+        local_only: drafted_status_params[:local_only],
         text_count: drafted_status_params[:text_count],
         is_rss_content: false
       )
