@@ -37,7 +37,7 @@ module Overrides::NotificationExtendedController
 
   def filter_private_mentions(notifications)
      notifications.reject do |notification|
-      notification.type == :mention && notification.target_status&.visibility == 'direct'
+      notification.target_status&.visibility == 'direct'
     end
   end
 
