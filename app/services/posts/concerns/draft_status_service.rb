@@ -27,7 +27,7 @@ module Posts::Concerns::DraftStatusService
     @text        = @options[:text] || ''
     @in_reply_to = @options[:thread]
 
-    # @antispam = Antispam.new // Disabled for drafted statuses to meet with Qlub version
+    @antispam = Antispam.new if defined?(Antispam)
 
     return idempotency_duplicate if idempotency_given? && idempotency_duplicate?
 
@@ -50,9 +50,12 @@ module Posts::Concerns::DraftStatusService
     end
 
     @status
-  # / Disabled for drafted statuses to meet with Qlub version 
-  # rescue Antispam::SilentlyDrop => e
-  #   e.status
+  rescue => e
+    if defined?(Antispam::SilentlyDrop) && e.is_a?(Antispam::SilentlyDrop)
+      e.status
+    else
+      raise
+    end
   end
 
   private
@@ -75,7 +78,7 @@ module Posts::Concerns::DraftStatusService
 
   def draft_status!
     status_for_validation = @account.statuses.build(status_attributes)
-    # @antispam.local_preflight_check!(status_for_validation)
+    @antispam.local_preflight_check!(status_for_validation) if defined?(Antispam)
 
     if status_for_validation.valid?
       # Marking the status as destroyed is necessary to prevent the status from being
