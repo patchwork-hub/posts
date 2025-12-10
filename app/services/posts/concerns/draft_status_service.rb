@@ -27,7 +27,7 @@ module Posts::Concerns::DraftStatusService
     @text        = @options[:text] || ''
     @in_reply_to = @options[:thread]
 
-    @antispam = Antispam.new
+    # @antispam = Antispam.new // Disabled for drafted statuses to meet with Qlub version
 
     return idempotency_duplicate if idempotency_given? && idempotency_duplicate?
 
@@ -50,8 +50,9 @@ module Posts::Concerns::DraftStatusService
     end
 
     @status
-  rescue Antispam::SilentlyDrop => e
-    e.status
+  # / Disabled for drafted statuses to meet with Qlub version 
+  # rescue Antispam::SilentlyDrop => e
+  #   e.status
   end
 
   private
@@ -74,7 +75,7 @@ module Posts::Concerns::DraftStatusService
 
   def draft_status!
     status_for_validation = @account.statuses.build(status_attributes)
-    @antispam.local_preflight_check!(status_for_validation)
+    # @antispam.local_preflight_check!(status_for_validation)
 
     if status_for_validation.valid?
       # Marking the status as destroyed is necessary to prevent the status from being
@@ -91,8 +92,8 @@ module Posts::Concerns::DraftStatusService
     else
       raise ActiveRecord::RecordInvalid
     end
-  rescue Antispam::SilentlyDrop
-    @status = @account.patchwork_drafted_status.new(drafted_status_attributes).tap(&:delete)
+  # rescue Antispam::SilentlyDrop
+  #   @status = @account.patchwork_drafted_status.new(drafted_status_attributes).tap(&:delete)
   end
 
   def drafted_status_attributes
