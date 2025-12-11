@@ -95,14 +95,14 @@ module Posts::Concerns::DraftStatusService
       # the media attachments when the scheduled status is created
 
       ApplicationRecord.transaction do
-        @status = @account.scheduled_statuses.create!(scheduled_status_attributes)
+        @status = @account.patchwork_drafted_statuses.create!(drafted_status_attributes)
       end
     else
       raise ActiveRecord::RecordInvalid
     end
   rescue => e
     if defined?(Antispam::SilentlyDrop) && e.is_a?(Antispam::SilentlyDrop)
-      @status = @account.scheduled_status.new(scheduled_status_attributes).tap(&:delete)
+      @status = @account.patchwork_drafted_status.new(drafted_status_attributes).tap(&:delete)
     else
       raise
     end
