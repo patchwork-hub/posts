@@ -100,8 +100,8 @@ module Posts::Concerns::DraftStatusService
     else
       raise ActiveRecord::RecordInvalid
     end
-  # rescue Antispam::SilentlyDrop
-  #   @status = @account.patchwork_drafted_status.new(drafted_status_attributes).tap(&:delete)
+  if defined?(Antispam::SilentlyDrop) && e.is_a?(Antispam::SilentlyDrop)
+    @status = @account.patchwork_drafted_status.new(drafted_status_attributes).tap(&:delete)
   end
 
   def drafted_status_attributes
