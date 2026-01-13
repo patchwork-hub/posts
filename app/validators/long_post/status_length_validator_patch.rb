@@ -2,6 +2,8 @@
 
 module LongPost
   module StatusLengthValidatorPatch
+    include PatchworkHelper
+
     DEFAULT_MAX_CHARS = 500
 
     def self.prepended(base)
@@ -9,7 +11,6 @@ module LongPost
         def validate(status)
           return unless status.local? && !status.reblog?
           max_chars = get_max_chars
-          Rails.logger.info("MAX_CHARACTER: #{max_chars}")
           status.errors.add(:text, I18n.t('statuses.over_character_limit', max: max_chars)) if too_long?(status)
         end
 
@@ -23,7 +24,7 @@ module LongPost
         def get_max_chars
           
           # Early return if Posts::ServerSetting doesn't exist
-          return DEFAULT_MAX_CHARS unless Object.const_defined?('Posts::ServerSetting')
+          return DEFAULT_MAX_CHARS unless patchwork_server_settings_exist?
           
           begin
             long_post = Posts::ServerSetting.get_long_post('Long posts')
@@ -44,16 +45,12 @@ module LongPost
             
             max_chars
           rescue ActiveRecord::RecordNotFound => e
-            Rails.logger.warn("Long posts setting not found: #{e.message}")
             DEFAULT_MAX_CHARS
           rescue ActiveRecord::StatementInvalid => e
-            Rails.logger.error("Database error in get_max_chars: #{e.message}")
             DEFAULT_MAX_CHARS
           rescue NoMethodError => e
-            Rails.logger.error("Method error in get_max_chars (possible nil reference): #{e.message}")
             DEFAULT_MAX_CHARS
           rescue StandardError => e
-            Rails.logger.error("Unexpected error in get_max_chars: #{e.class} - #{e.message}")
             DEFAULT_MAX_CHARS
           end
         end

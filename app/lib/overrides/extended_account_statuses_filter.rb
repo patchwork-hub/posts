@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 module Overrides::ExtendedAccountStatusesFilter
   include Redisable
+  include PatchworkHelper
 
   KEYS = %i(
     pinned
@@ -56,13 +57,12 @@ module Overrides::ExtendedAccountStatusesFilter
 
   def no_boost_channel?
     begin
-      return false unless Object.const_defined?('Posts::ServerSetting')
+      return false unless patchwork_community_admin_exist?
   
       community_admin = Posts::CommunityAdmin
                           .includes(:community)
                           .find_by(account_id: @account.id, is_boost_bot: true)
     rescue StandardError => e
-      Rails.logger.warn("Skipping CommunityAdmin check: #{e.message}")
       return false
     end
 
