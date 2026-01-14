@@ -1,96 +1,126 @@
-# Posts Gem
+# Posts
 
-A Ruby on Rails plugin that enhances Mastodon's posting features with customizable character limits, draft management, quote posts, and automatic ALT text generation.
+A comprehensive Ruby on Rails plugin that enhances Mastodon's posting capabilities with advanced features including customizable character limits, draft management, quote posts, automatic ALT text generation, community management, and relay support.
 
-## Overview
-
-New post features for your Patchwork enhanced Mastodon server.
-
-To enable this plugin please make sure you have set up a Mastodon server and installed the Patchwork Dashboard, with both running correctly.
-
-[See the full Patchwork ReadMe here.](https://github.com/patchwork-hub/patchwork_dashboard/blob/main/README.md)
-
-## Features
-
-### 🔤 Custom Character Limit
-Set a custom character limit for posts on the server through server settings.
-
-### 📝 Draft Management
-- Create and manage draft posts
-- Save posts as drafts before publishing
-- API endpoints for draft operations
-
-### 🖼️ Enhanced Media Handling
-- Automatic ALT text generation for images using AI
-- Support for multiple image formats (JPG, PNG, GIF, WebP, BMP)
-- Media attachment validation and processing
-
-### 🔗 Link Preview Generation
-- Automatic link thumbnail generation
-- Configurable link preview attributes (title, images, description)
-- Custom user agent for web scraping
-
-### ⚙️ Server Configuration
-- Flexible server settings management
-- Environment-based feature toggles
-- Customizable posting limits and restrictions
+This gem extends Mastodon's core posting functionality by providing enhanced media handling, flexible post management, automated content enhancement, and advanced filtering capabilities. It integrates seamlessly with the Patchwork Dashboard to provide a complete content management solution for Mastodon instances.
 
 ## Installation
 
-Before installing this gem, please make sure that the following systems are up and running:
-
-- [Set up a Mastodon server](https://docs.joinmastodon.org/admin/install/)
-- [Patchwork Dashboard](https://github.com/patchwork-hub/patchwork_dashboard/blob/main/README.md)
-
-1. Add this line to your Mastodon application's Gemfile:
+Add this line to your application's Gemfile:
 
 ```ruby
-gem "posts", git: "https://github.com/patchwork-hub/posts"
+gem 'posts', git: 'https://github.com/patchwork-hub/posts.git'
 ```
 
-2. Install the gem:
+And then execute:
 
 ```bash
 bundle install
-```
-
-3. Run the migrations:
-
-```bash
+rails posts:install:migrations
 rails db:migrate
 ```
 
-4. After installing the gem, restart your application to load it in your application.
+## Features
+
+### Post Management
+- **Custom Character Limits**: Configure custom character limits per instance through server settings (default: 500 characters)
+- **Draft Status Management**: Create, update, publish, and delete draft posts with full API support
+- **Scheduled Posts**: Extended scheduled status management with custom parameters
+- **Quote Posts**: Support for quoting other posts with visibility inheritance
+- **Reply Threading**: Enhanced reply management with thread validation
+
+### Media & Content Enhancement
+- **Automatic ALT Text Generation**: AI-powered automatic ALT text generation for images using external API integration
+- **Link Preview Generation**: Automatic link thumbnail generation with customizable metadata extraction
+- **Media Attachment Management**: Support for multiple image formats (JPEG, PNG, GIF, WebP, BMP) with validation
+- **Draft Media Association**: Media attachments can be associated with draft statuses
+
+### Notification Enhancements
+- **Direct Mention Filtering**: Filter notifications to show only direct mentions
+- **Private Mention Exclusion**: Option to exclude private/direct mentions from notification lists
+- **Grouped Notifications**: Enhanced notification grouping with custom type support
+- **Extended Notification API**: V1 and V2 API enhancements for better filtering
+
+### Automation & Integration
+- **Post Boosting**: Automatic post boosting to external instances with worker support
+- **Relay Management**: Create and delete relay connections for federated content
+- **Custom Timeline Filtering**: Extended account status filtering with multiple exclusion options
+- **Boost Channel Management**: Special handling for boost bot accounts
+
+### Server Configuration
+- **Flexible Server Settings**: Hierarchical server settings with parent-child relationships
+- **Environment-Based Toggles**: Feature flags for ALT text generation, post boosting, and user toggles
+- **Instance Serialization**: Extended instance metadata with custom configuration exposure
+
+## API Endpoints
+
+### Draft Management
+```
+POST   /api/v1/drafted_statuses           # Create a new draft
+GET    /api/v1/drafted_statuses           # List all drafts (grouped by date)
+GET    /api/v1/drafted_statuses/:id       # Show a specific draft
+PUT    /api/v1/drafted_statuses/:id       # Update a draft
+DELETE /api/v1/drafted_statuses/:id       # Delete a draft
+POST   /api/v1/drafted_statuses/:id/publish # Publish a draft as a status
+```
+
+### Utilities
+```
+GET    /api/v1/utilities/link_preview     # Generate link preview for a URL
+```
+
+### Relay Management
+```
+POST   /api/v1/patchwork/relays           # Create a new relay connection
+DELETE /api/v1/patchwork/relays/:id       # Remove a relay connection
+```
 
 ## Configuration
 
 ### Environment Variables
 
-- `ALT_TEXT_ENABLED`: Set to `true` to enable automatic ALT text generation for images
-- Other configuration options can be set through the Patchwork Dashboard
+#### ALT Text Generation
+- `ALT_TEXT_ENABLED` - Enable/disable automatic ALT text generation (`true`/`false`)
+- `ALT_TEXT_URL` - Base URL for ALT text API service
+- `ALT_TEXT_SECRET` - API key for ALT text service authentication
+- `ALT_TEXT_USER_TOGGLE` - Require user opt-in for ALT text generation (`true`/`false`)
 
-### Server Settings
+#### Post Boosting
+- `BOOST_POST_ENABLED` - Enable/disable automatic post boosting (`true`/`false`)
+- `BOOST_POST_INSTANCE_URL` - Target instance URL for boosting posts
+- `BOOST_POST_API_KEY` - API key for boost service authentication
+- `BOOST_POST_API_SECRET` - API secret for boost service authentication
+- `BOOST_POST_USERNAME` - Username for boost service account
+- `BOOST_POST_USER_DOMAIN` - Domain for boost service account
 
-Configure posting limits and features through your Patchwork Dashboard or directly via the `Posts::ServerSetting` model.
+### Database Models
 
-## API Endpoints
+The gem adds the following database tables:
+- `patchwork_drafted_statuses` - Stores draft posts with associated media
+- `patchwork_communities` - Community definitions with visibility settings
+- `patchwork_communities_admins` - Community administrator associations
+- `server_settings` - Hierarchical server configuration settings
 
-The gem provides additional API endpoints for:
+### Limits
 
-- `/api/v1/drafted_statuses` - Draft management
-- Enhanced media attachment handling
-- Server settings configuration
+- **Total Draft Limit**: 300 drafts per account
+- **Daily Draft Limit**: 25 new drafts per day per account
+- **Media Upload Limit**: 2 MB per community image
 
-## Requirements
+## Development
 
-- Ruby on Rails 8.0+
-- Mastodon server
-- Patchwork Dashboard
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/patchwork-hub/posts.
+Bug reports and pull requests are welcome on GitHub at https://github.com/patchwork-hub/posts. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/patchwork-hub/posts/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
-The gem is available as open source under the terms of the [AGPL-3.0 License](https://www.gnu.org/licenses/agpl-3.0.en.html).
+The gem is available as open source under the terms of the [AGPL-3.0 License](https://opensource.org/licenses/AGPL-3.0).
+
+## Code of Conduct
+
+Everyone interacting in the Posts project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/patchwork-hub/posts/blob/main/CODE_OF_CONDUCT.md).
