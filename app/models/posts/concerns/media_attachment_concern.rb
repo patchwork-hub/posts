@@ -40,7 +40,7 @@ module Posts::Concerns::MediaAttachmentConcern
     end
 
     def local_or_reblogged_status?
-      return true unless self.status_id.present?
+      return true if self.remote_url.blank?
       if self.status_id.present?
         status = self.status
         return true if status.local? || status.reply?
