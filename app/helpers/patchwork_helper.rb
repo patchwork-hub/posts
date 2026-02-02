@@ -3,6 +3,12 @@
 module PatchworkHelper
   extend ActiveSupport::Concern
 
+  def patchwork_table_exists?(table_name)
+    ActiveRecord::Base.connection.data_source_exists?(table_name)
+  rescue ActiveRecord::NoDatabaseError, PG::ConnectionBad
+    false
+  end
+
   def patchwork_server_settings_exist?
     return false unless patchwork_table_exists?('server_settings')
 
