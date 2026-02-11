@@ -21,5 +21,12 @@ module Posts
     config.autoload_paths << File.expand_path("../app/services", __FILE__)
     config.autoload_paths << File.expand_path("../app/workers", __FILE__)
 
+    initializer 'accounts.extend_allowed_hosts' do |app|
+      allowed_hosts = ['leicestergazette.ghost.io']
+      allowed_hosts.each do |host|
+        app.config.hosts << host unless app.config.hosts.include?(host)
+      end
+    end
+
   end
 end
