@@ -19,6 +19,8 @@ Posts::Engine.routes.draw do
       post 'patchwork/relays', to: 'relays#create'
       delete 'patchwork/relays/:id', to: 'relays#destroy'
 
+      post 'ghost_webhooks', to: 'webhooks#handle_ghost'
+
     end
   end
 end
