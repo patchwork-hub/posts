@@ -22,9 +22,12 @@ module Posts
     config.autoload_paths << File.expand_path("../app/workers", __FILE__)
 
     initializer 'accounts.extend_allowed_hosts' do |app|
-      allowed_hosts = ['leicestergazette.ghost.io']
-      allowed_hosts.each do |host|
-        app.config.hosts << host unless app.config.hosts.include?(host)
+      if ENV.values_at('GHOST_URL', 'GHOST_WEBHOOK_TARGET_URL', 'GHOST_WEBHOOK_SECRET').all?(&:present?)
+        allowed_hosts = [ENV['GHOST_URL']]
+        allowed_hosts.each do |host|
+          clean_host = host.gsub(%r{^https?://}, '').split('/').first
+          app.config.hosts << clean_host unless app.config.hosts.include?(clean_host)
+        end
       end
     end
 
