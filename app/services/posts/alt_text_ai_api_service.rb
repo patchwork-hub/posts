@@ -29,10 +29,9 @@ module Posts
       begin
         response = HTTParty.get(base_url, headers: headers)
         resp_body_obj = Posts::AlttextGetAccount.new(JSON.parse(response.body))
-        Rails.logger.info "alttest.ai get account info resp body >> #{resp_body_obj.to_json}"
         return resp_body_obj
       rescue StandardError => e
-        Rails.logger.info "Error making GET request: #{e.message}" 
+        Rails.logger.error "Error making GET request: #{e.message}" 
       end
     end
 
@@ -46,10 +45,9 @@ module Posts
         response = HTTParty.post(base_url,
                   body: @payload.to_json, headers: headers)
         resp_body_obj = Posts::AlttextCreateImage.new(JSON.parse(response.body))
-        Rails.logger.info "alttest.ai create image resp body >> #{resp_body_obj.to_json}"
         return resp_body_obj
       rescue StandardError => e
-        Rails.logger.info "Error making POST request: #{e.message}"
+        Rails.logger.error "Error making POST request: #{e.message}"
       end
     end
   end

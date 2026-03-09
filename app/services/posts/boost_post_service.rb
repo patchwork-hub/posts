@@ -39,9 +39,6 @@ module Posts
 
     def parse_response(response)
       parsed_body = JSON.parse(response.body) rescue { "status" => "error", "body" => "Invalid JSON response" }
-      Rails.logger.info("[BoostPostService] HTTP Status: #{response.code} #{response.message}")
-      Rails.logger.info("[BoostPostService] Response Body: #{parsed_body}")
-
       {
         status: parsed_body["status"] || :error,
         body:   parsed_body["body"]

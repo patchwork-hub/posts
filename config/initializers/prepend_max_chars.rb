@@ -8,6 +8,7 @@ Rails.application.config.to_prepare do
   Account.include(Posts::Concerns::AccountConcern)
   PostStatusService.prepend(Posts::Concerns::DraftStatusService)
   Status.include(Posts::Concerns::StatusConcern)
+  ProcessHashtagsService.prepend(Posts::Concerns::ProcessHashtagsServiceExtension)
   AccountStatusesFilter.prepend(Overrides::ExtendedAccountStatusesFilter)
   Api::V1::ScheduledStatusesController.prepend(Overrides::ScheduledStatusesController)
   Api::V2::NotificationsController.prepend(Overrides::NotificationExtendedController)
