@@ -14,6 +14,7 @@ module Posts::Concerns::ProcessHashtagsServiceExtension
   private
 
   def reblog_posts(status)
+    return unless status.created_at == status.updated_at
     if status.local? && status.tags.present? && status.visibility == 'public'
       return unless ENV.values_at('REBLOG_INSTANCE_URL', 'REBLOG_EMAIL', 'REBLOG_PASSWORD', 'REBLOG_CLIENT_ID', 'REBLOG_CLIENT_SECRET').all?(&:present?)
       status_url = ActivityPub::TagManager.instance.url_for(status)
