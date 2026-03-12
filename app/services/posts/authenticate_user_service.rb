@@ -10,6 +10,7 @@ module Posts
     end
 
     def call
+      validate_oauth_credentials!
       response = perform_request
       parse_response(response)
     rescue StandardError => e
@@ -18,6 +19,16 @@ module Posts
     end
 
     private
+
+    def validate_oauth_credentials!
+      missing_vars = []
+      missing_vars << 'REBLOG_CLIENT_ID' if ENV['REBLOG_CLIENT_ID'].blank?
+      missing_vars << 'REBLOG_CLIENT_SECRET' if ENV['REBLOG_CLIENT_SECRET'].blank?
+      
+      if missing_vars.any?
+        raise ArgumentError, "Missing required environment variables: #{missing_vars.join(', ')}"
+      end
+    end
 
     def perform_request
       url = "#{@base_url}#{@endpoint}"
