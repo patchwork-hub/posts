@@ -14,8 +14,13 @@ module Posts::Concerns::MediaAttachmentConcern
     after_save :call_generate_alt_text_worker if ENV['ALT_TEXT_ENABLED'].present? && ENV['ALT_TEXT_ENABLED'].to_s.downcase == 'true'
 
     def can_generate_alt?
-      user_toggle_required = ENV['ALT_TEXT_USER_TOGGLE'].present? && ENV['ALT_TEXT_USER_TOGGLE'].to_s.downcase == 'true'
-      user_check_passes = user_toggle_required ? check_alt_text_enabled? : true
+      skip_user_setting = ENV['SKIP_ALT_TEXT_USER_SETTING'].present? && ENV['SKIP_ALT_TEXT_USER_SETTING'].to_s.downcase == 'true'
+      user_check_passes = true
+
+      unless skip_user_setting
+        user_toggle_required = ENV['ALT_TEXT_USER_TOGGLE'].present? && ENV['ALT_TEXT_USER_TOGGLE'].to_s.downcase == 'true'
+        user_check_passes = user_toggle_required ? check_alt_text_enabled? : true
+      end
 
       if is_valid_content_type? && check_user_desc? && local_or_reblogged_status? && user_check_passes
         return true
