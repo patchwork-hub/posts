@@ -14,7 +14,7 @@ module Posts
       app_title = ENV['ARTICLE_NOTIFICATION_SENDER_NAME'] || 'Development Patchwork'
       body = article_data['title'].truncate_words(8)
       data = {
-        noti_type: 'ghost_articles',
+        noti_type: 'new_article',
         article_id: article_data['article_id'],
       }
 
