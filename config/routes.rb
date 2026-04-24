@@ -20,7 +20,7 @@ Posts::Engine.routes.draw do
       delete 'patchwork/relays/:id', to: 'relays#destroy'
 
       post 'ghost_webhooks', to: 'webhooks#handle_ghost'
-
+      post 'wordpress_webhooks', to: 'webhooks#handle_wordpress'
     end
   end
 end

@@ -1,6 +1,7 @@
 module Posts::Api::V1
   class WebhooksController < Api::BaseController
     before_action :authenticate_ghost_request!, only: [:handle_ghost]
+    before_action :authenticate_wordpress_request!, only: [:handle_wordpress]
 
     # manage Ghost webhook
     def handle_ghost
@@ -17,6 +18,21 @@ module Posts::Api::V1
       end
     rescue => e
       render json: { errors: e.message }, status: :internal_server_error
+    end
+
+    # manage WordPress webhook
+    def handle_wordpress
+      wordpress_post = params.to_unsafe_h
+      if wordpress_post.present?
+        wordpress_post_data = {
+          'title' => wordpress_post[:post][:post_title],
+          'article_id' => wordpress_post[:post_id].to_s,
+        }
+        ArticleNotificationWorker.perform_async(wordpress_post_data)
+        render json: { message: "Webhook received" }, status: :ok
+      else
+        render json: { error: "No article data" }, status: :unprocessable_entity
+      end
     end
 
     private
@@ -50,6 +66,25 @@ module Posts::Api::V1
       # Compare
       unless ActiveSupport::SecurityUtils.secure_compare(expected_hash, received_hash)
         render json: { error: 'Invalid Signature' }, status: :unauthorized
+      end
+    rescue => e
+      Rails.logger.error "Error processing : #{e.message}\n#{e.backtrace.join("\n")}"
+      render json: { errors: e.message }, status: :internal_server_error
+    end
+
+    def authenticate_wordpress_request!
+      wp_webhook_token = ENV['WP_WEBHOOK_TOKEN']
+      if wp_webhook_token.blank?
+        raise "WP_WEBHOOK_TOKEN environment variable is missing"
+      end
+
+      authorized = Rack::Utils.secure_compare(
+        params[:auth_token].to_s,
+        wp_webhook_token.to_s
+      )
+
+      unless authorized
+        render json: { error: 'Unauthorized' }, status: :unauthorized
       end
     rescue => e
       Rails.logger.error "Error processing : #{e.message}\n#{e.backtrace.join("\n")}"
