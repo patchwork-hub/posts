@@ -131,6 +131,12 @@ DELETE /api/v1/patchwork/relays/:id       # Remove a relay connection
 - `GHOST_ADMIN_API_KEY` - Ghost Admin API key in format `id:secret` (Optional; required only if using Ghost subscription features)
 - `GHOST_NOTIFICATION_SENDER_NAME` - App name displayed in Ghost notifications (Optional; defaults to `Development Patchwork`)
 
+#### WordPress CMS Integration (Optional)
+
+- `WORDPRESS_URL` - Base URL of WordPress CMS instance (Optional; required if using WordPress webhooks)
+- `WP_WEBHOOK_TOKEN` - Auth token for WordPress webhook authentication (Optional; required if using WordPress webhooks)
+- `ARTICLE_NOTIFICATION_SENDER_NAME` - App name displayed in Article notifications (Optional; defaults to `Development Patchwork`)
+
 ### Database Models
 
 The gem adds the following database tables:
