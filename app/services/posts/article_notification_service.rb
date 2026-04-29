@@ -16,7 +16,6 @@ module Posts
       data = {
         noti_type: 'new_article',
         article_id: article_data['article_id'],
-        title: article_data['title'],
       }
 
       # for ios & android
