@@ -14,7 +14,7 @@ Rails.application.config.to_prepare do
   Api::V2::NotificationsController.prepend(Overrides::NotificationExtendedController)
   Api::V1::NotificationsController.prepend(Overrides::NotificationV1ExtendedController)
   Notification.prepend(Posts::Concerns::NotificationConcern)
-  if ENV['CUSTOMIZED_FILE_UPLOAD_ENABLED'].present? && ENV['CUSTOMIZED_FILE_UPLOAD_ENABLED'].to_s.downcase == 'true'
+  if ENV['CUSTOMIZED_FILE_UPLOAD_ENABLED'].present? && ENV['CUSTOMIZED_FILE_UPLOAD_ENABLED'].to_s.downcase.strip == 'true'
     MediaAttachment.prepend(Overrides::MediaAttachmentUploadOverride)
   end
 end
