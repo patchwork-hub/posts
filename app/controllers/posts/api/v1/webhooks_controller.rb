@@ -6,12 +6,18 @@ module Posts::Api::V1
     # manage Ghost webhook
     def handle_ghost
       ghost_post_articles = params[:post]
+      Rails.logger.info "<<<<<<<< HANDLE GHOST POST ARTICLES: <<<<<<<<<<<"
+      Rails.logger.info "params: #{params.inspect}"
+      Rails.logger.info "ghost_post_articles: #{ghost_post_articles.inspect}"
       if ghost_post_articles.present?
+        Rails.logger.info "GHOST_POST_ARTICLES IS NOT EMPTY: #{ghost_post_articles.present?}"
         ghost_post_data = {
           'title' => ghost_post_articles[:current][:title],
           'article_id' => ghost_post_articles[:current][:id].to_s,
         }
+        Rails.logger.info "GHOST_POST_DATA_TO_ENQUE:"
         GhostNotificationWorker.perform_async(ghost_post_data)
+        Rails.logger.info "GHOST NOTIFICATION WORKER ENQUEUE SUCCESS:"
         render json: { message: "Webhook received" }, status: :ok
       else
         render json: { error: "No post data found" }, status: :unprocessable_entity
@@ -39,6 +45,8 @@ module Posts::Api::V1
 
     def authenticate_ghost_request!
       sig_header = request.headers['HTTP_X_GHOST_SIGNATURE']
+      Rails.logger.info "<<<<<< AUTHENTICATE GHOST REQUEST: <<<<<<<<<<<"
+      Rails.logger.info "sig_header: #{sig_header.inspect}"
       if sig_header.blank?
         render json: { error: 'Missing Signature' }, status: :unauthorized
         return
@@ -58,6 +66,7 @@ module Posts::Api::V1
       # Verify HMAC (Ghost format: body + timestamp)
       secret = ENV['GHOST_WEBHOOK_SECRET']
       if secret.blank?
+        Rails.logger.info "GHOST_WEBHOOK_SECRET environment variable is missing"
         raise "GHOST_WEBHOOK_SECRET environment variable is missing"
       end
       data_to_sign = "#{raw_body}#{timestamp}"
@@ -65,6 +74,7 @@ module Posts::Api::V1
 
       # Compare
       unless ActiveSupport::SecurityUtils.secure_compare(expected_hash, received_hash)
+        Rails.logger.info "Ghost::Invalid Signature: #{received_hash} vs #{expected_hash}"
         render json: { error: 'Invalid Signature' }, status: :unauthorized
       end
     rescue => e
