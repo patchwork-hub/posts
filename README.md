@@ -113,6 +113,10 @@ DELETE /api/v1/patchwork/relays/:id       # Remove a relay connection
 - `REBLOG_CLIENT_ID` - OAuth client ID for reblog service (Optional; required if reblog is enabled)
 - `REBLOG_CLIENT_SECRET` - OAuth client secret for reblog service (Optional; required if reblog is enabled)
 
+#### Customized File Upload (Optional)
+
+- `CUSTOMIZED_FILE_UPLOAD_ENABLED` - Enable/disable custom media upload handling (Optional; `true`/`false`, defaults to disabled). When enabled, applies the media upload override to support extended file types and larger upload limits.
+
 #### Firebase Push Notifications (Optional)
 
 - `FIREBASE_PROJECT_ID` - Firebase project ID for FCM push notifications (Optional; required for push notifications to work)
