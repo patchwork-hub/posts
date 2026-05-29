@@ -1,0 +1,477 @@
+{
+  "info": {
+    "_postman_id": "6f6f9f1c-1ce5-4d6d-9a5f-4d0d4c3c5d1b",
+    "name": "Posts API",
+    "description": "Postman collection generated from the Posts Rails engine routes.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "drafted_status_id",
+      "value": "1"
+    },
+    {
+      "key": "relay_id",
+      "value": "1"
+    },
+    {
+      "key": "status_id",
+      "value": "1"
+    },
+    {
+      "key": "link_preview_url",
+      "value": "https://example.com"
+    },
+    {
+      "key": "relay_inbox_url",
+      "value": "https://relay.example.com/inbox"
+    },
+    {
+      "key": "ghost_signature",
+      "value": "sha256=example, t=1710000000"
+    },
+    {
+      "key": "wordpress_auth_token",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Drafted Statuses",
+      "item": [
+        {
+          "name": "Create Drafted Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/drafted_statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drafted_statuses"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Draft post body\",\n  \"in_reply_to_id\": \"{{status_id}}\",\n  \"sensitive\": false,\n  \"spoiler_text\": \"CW example\",\n  \"visibility\": \"public\",\n  \"language\": \"en\",\n  \"scheduled_at\": \"2026-05-26T12:00:00Z\",\n  \"is_only_for_followers\": true,\n  \"is_meta_preview\": false,\n  \"text_count\": 18,\n  \"drafted\": true,\n  \"allowed_mentions\": [\"https://example.com/@alice\"],\n  \"media_ids\": [\"123\", \"124\"],\n  \"media_attributes\": [\n    {\n      \"id\": \"123\",\n      \"thumbnail\": \"https://example.com/thumb.jpg\",\n      \"description\": \"Cover image\",\n      \"sensitive\": false,\n      \"focus\": \"0.0,0.0\"\n    }\n  ],\n  \"community_ids\": [\"10\", \"11\"],\n  \"poll\": {\n    \"multiple\": false,\n    \"hide_totals\": false,\n    \"expires_in\": 86400,\n    \"options\": [\"Yes\", \"No\"]\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "List Drafted Statuses",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/drafted_statuses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drafted_statuses"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Show Drafted Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/drafted_statuses/{{drafted_status_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drafted_statuses",
+                "{{drafted_status_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Drafted Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/drafted_statuses/{{drafted_status_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drafted_statuses",
+                "{{drafted_status_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Updated draft body\",\n  \"visibility\": \"unlisted\",\n  \"language\": \"en\",\n  \"drafted\": true,\n  \"media_ids\": [\"123\"],\n  \"poll\": {\n    \"multiple\": true,\n    \"hide_totals\": false,\n    \"expires_in\": 43200,\n    \"options\": [\"Option A\", \"Option B\"]\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Drafted Status (PUT)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/drafted_statuses/{{drafted_status_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drafted_statuses",
+                "{{drafted_status_id}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Updated draft body\",\n  \"visibility\": \"unlisted\",\n  \"language\": \"en\",\n  \"drafted\": true\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Drafted Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/drafted_statuses/{{drafted_status_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drafted_statuses",
+                "{{drafted_status_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Publish Drafted Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/drafted_statuses/{{drafted_status_id}}/publish",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "drafted_statuses",
+                "{{drafted_status_id}}",
+                "publish"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Published post body\",\n  \"visibility\": \"public\",\n  \"language\": \"en\",\n  \"drafted\": false\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Utilities",
+      "item": [
+        {
+          "name": "Link Preview",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v1/utilities/link_preview?url={{link_preview_url}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "utilities",
+                "link_preview"
+              ],
+              "query": [
+                {
+                  "key": "url",
+                  "value": "{{link_preview_url}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Relay Management",
+      "item": [
+        {
+          "name": "Create Relay",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/patchwork/relays",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "patchwork",
+                "relays"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"inbox_url\": \"{{relay_inbox_url}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Relay",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/api/v1/patchwork/relays/{{relay_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "patchwork",
+                "relays",
+                "{{relay_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Ghost Webhook",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Ghost-Signature",
+                "value": "{{ghost_signature}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/ghost_webhooks",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ghost_webhooks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"post\": {\n    \"current\": {\n      \"title\": \"Ghost article title\",\n      \"id\": \"ghost-123\"\n    }\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "WordPress Webhook",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/wordpress_webhooks?auth_token={{wordpress_auth_token}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "wordpress_webhooks"
+              ],
+              "query": [
+                {
+                  "key": "auth_token",
+                  "value": "{{wordpress_auth_token}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"post\": {\n    \"post_title\": \"WordPress article title\"\n  },\n  \"post_id\": \"wp-123\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
